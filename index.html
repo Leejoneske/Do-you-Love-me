@@ -77,7 +77,48 @@
         }
         .gif {
             width: 300px;
-            height: auto; 
+            height: auto;
+        }
+        .toggle-audio {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .toggle-audio input {
+            display: none;
+        }
+        .toggle-audio .slider {
+            width: 50px;
+            height: 25px;
+            background: red;
+            border-radius: 15px;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .toggle-audio .slider::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2.5px;
+            left: 2.5px;
+            transition: transform 0.3s;
+        }
+        .toggle-audio input:checked + .slider {
+            background: green;
+        }
+        .toggle-audio input:checked + .slider::before {
+            transform: translateX(25px);
+        }
+        .toggle-audio .label {
+            margin-left: 10px;
+            font-size: 14px;
+            color: #333;
         }
         @media (max-width: 600px) {
             h2 {
@@ -103,15 +144,23 @@
             <button class="no-btn">No</button>
         </div>
     </div>
-    <audio id="background-audio" autoplay loop>
+    <audio id="background-audio" loop>
         <source src="audio/brianjcb - Pixels(MP3_320K).mp3" type="audio/mp3">
         Your browser does not support the audio tag.
     </audio>
+    <div class="toggle-audio">
+        <input type="checkbox" id="audio-toggle">
+        <label for="audio-toggle" class="slider"></label>
+        <span class="label" id="audio-label">Audio Off</span>
+    </div>
     <script>
         const question = document.querySelector(".question");
         const gif = document.querySelector(".gif");
         const yesBtn = document.querySelector(".yes-btn");
         const noBtn = document.querySelector(".no-btn");
+        const audio = document.getElementById('background-audio');
+        const audioToggle = document.getElementById('audio-toggle');
+        const audioLabel = document.getElementById('audio-label');
 
         yesBtn.addEventListener("click", () => {
             question.innerHTML = "I love you too! 😘";
@@ -137,12 +186,17 @@
         noBtn.addEventListener("mouseover", moveButton);
         noBtn.addEventListener("touchstart", moveButton);
 
-        const audio = document.getElementById('background-audio');
         audio.volume = 0.1;
 
-        function changeVolume(level) {
-            audio.volume = level;
-        }
+        audioToggle.addEventListener('change', function() {
+            if (this.checked) {
+                audio.play();
+                audioLabel.textContent = "Audio On";
+            } else {
+                audio.pause();
+                audioLabel.textContent = "Audio Off";
+            }
+        });
     </script>
 </body>
 </html>
