@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="An interactive web page that playfully asks 'Do you love me?' Perfect for expressing affection or as a fun digital love note.">
+    <meta name="keywords" content="love, affection, interactive, web toy, romantic, playful">
+    <meta name="author" content="Jones">
+
+    <!-- Open Graph meta tags for social media sharing -->
+    <meta property="og:title" content="Do you love me? | Interactive Love Question">
+    <meta property="og:description" content="A fun, interactive way to ask someone if they love you. Try to catch the 'No' button!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://do-you-love-me.vercel.app">
+    <meta property="og:image" content="https://yourwebsite.com/path-to-your-preview-image.jpg">
+
+    <!-- Twitter Card meta tags for Twitter sharing -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Do you love me? | Interactive Love Question">
+    <meta name="twitter:description" content="A fun, interactive way to ask someone if they love you. Try to catch the 'No' button!">
+    <meta name="twitter:image" content="https://yourwebsite.com/path-to-your-preview-image.jpg">
+
+    <!-- Additional meta tags -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://do-you-love-me.vercel.app">
+    <title>Do you love me | Jones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: whitesmoke;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            font-size: 2em;
+            color: #e94d58;
+            margin: 15px 0;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        button {
+            width: 150px;
+            height: 40px;
+            color: white;
+            font-size: 1.2em;
+            border-radius: 30px;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px gray;
+            border: 2px solid #e94d58;
+        }
+        .yes-btn {
+            background: #e94d58;
+            margin-right: 20px;
+        }
+        .no-btn {
+            background: white;
+            color: #e94d58;
+            transition: all 0.1s ease;
+        }
+        .gif {
+            width: 300px;
+            height: auto; 
+        }
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.5em;
+            }
+            button {
+                width: 120px;
+                height: 35px;
+                font-size: 1em;
+            }
+            .yes-btn {
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h2 class="question">Do you love me?</h2>
+        <img class="gif" alt="gif" src="image/tenor (2).gif" />
+        <div class="btn-group">
+            <button class="yes-btn">Yes</button>
+            <button class="no-btn">No</button>
+        </div>
+    </div>
+    <audio id="background-audio" autoplay loop>
+        <source src="audio/brianjcb - Pixels(MP3_320K).mp3" type="audio/mp3">
+        Your browser does not support the audio tag.
+    </audio>
+    <script>
+        const question = document.querySelector(".question");
+        const gif = document.querySelector(".gif");
+        const yesBtn = document.querySelector(".yes-btn");
+        const noBtn = document.querySelector(".no-btn");
+
+        yesBtn.addEventListener("click", () => {
+            question.innerHTML = "I love you too! 😘";
+            gif.src = "https://i.pinimg.com/originals/55/3d/42/553d42bea9b10e0662a05aa8726fc7f4.gif";
+        });
+
+        function moveButton() {
+            const noBtnRect = noBtn.getBoundingClientRect();
+            const maxX = window.innerWidth - noBtnRect.width;
+            const maxY = window.innerHeight - noBtnRect.height;
+
+            let randomX = Math.floor(Math.random() * maxX);
+            let randomY = Math.floor(Math.random() * maxY);
+
+            randomX = Math.max(0, Math.min(randomX, maxX));
+            randomY = Math.max(0, Math.min(randomY, maxY));
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+        }
+
+        noBtn.addEventListener("mouseover", moveButton);
+        noBtn.addEventListener("touchstart", moveButton);
+
+        const audio = document.getElementById('background-audio');
+        audio.volume = 0.1;
+
+        function changeVolume(level) {
+            audio.volume = level;
+        }
+    </script>
+</body>
+</html>
