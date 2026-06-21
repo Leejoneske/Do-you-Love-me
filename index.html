@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Meta tags for SEO and social sharing -->
     <meta name="description" content="An interactive web page that playfully asks 'Do you love me?' Perfect for expressing affection or as a fun digital love note.">
     <meta name="keywords" content="love, affection, interactive, web toy, romantic, playful">
     <meta name="author" content="Jones">
 
-    <!-- Open Graph meta tags for social media sharing -->
+    <!-- Preload critical assets for speed -->
+    <link rel="preload" href="image/tenor (2).gif" as="image">
+    <link rel="preload" href="https://i.pinimg.com/originals/55/3d/42/553d42bea9b10e0662a05aa8726fc7f4.gif" as="image">
+    
+    <!-- Open Graph meta tags -->
     <meta property="og:title" content="Do you love me? | Interactive Love Question">
     <meta property="og:description" content="A fun, interactive way to ask someone if they love you. Try to catch the 'No' button!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://do-you-love-me.vercel.app">
     <meta property="og:image" content="https://yourwebsite.com/path-to-your-preview-image.jpg">
 
-    <!-- Twitter Card meta tags for Twitter sharing -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Do you love me? | Interactive Love Question">
     <meta name="twitter:description" content="A fun, interactive way to ask someone if they love you. Try to catch the 'No' button!">
     <meta name="twitter:image" content="https://yourwebsite.com/path-to-your-preview-image.jpg">
 
-    <!-- Additional meta tags -->
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://do-you-love-me.vercel.app">
     <title>Do you love me | Jones</title>
@@ -38,12 +39,14 @@
             min-height: 100vh;
             background: whitesmoke;
             font-family: Arial, sans-serif;
+            overflow-x: hidden; /* Prevent scrollbars when button moves */
         }
         .wrapper {
             text-align: center;
             padding: 20px;
             width: 100%;
             max-width: 600px;
+            contain: content; /* Browser optimization */
         }
         h2 {
             font-size: 2em;
@@ -54,6 +57,7 @@
             display: flex;
             justify-content: center;
             margin-top: 30px;
+            min-height: 50px; /* Layout stability */
         }
         button {
             width: 150px;
@@ -65,6 +69,7 @@
             cursor: pointer;
             box-shadow: 0 2px 4px gray;
             border: 2px solid #e94d58;
+            will-change: transform, left, top; /* Hardware acceleration */
         }
         .yes-btn {
             background: #e94d58;
@@ -73,11 +78,13 @@
         .no-btn {
             background: white;
             color: #e94d58;
-            transition: all 0.1s ease;
+            transition: none; /* Instant movement for better 'hard to catch' feel */
         }
         .gif {
             width: 300px;
             height: auto;
+            aspect-ratio: 1/1; /* Prevent layout shift */
+            background: #eee; /* Placeholder */
         }
         .toggle-audio {
             position: absolute;
@@ -138,65 +145,71 @@
 <body>
     <div class="wrapper">
         <h2 class="question">Do you love me?</h2>
-        <img class="gif" alt="gif" src="image/tenor (2).gif" />
+        <img class="gif" alt="gif" src="image/tenor (2).gif" loading="eager" width="300" height="300" />
         <div class="btn-group">
             <button class="yes-btn">Yes</button>
             <button class="no-btn">No</button>
         </div>
     </div>
-    <audio id="background-audio" loop>
+    <audio id="background-audio" loop preload="auto">
         <source src="audio/brianjcb - Pixels(MP3_320K).mp3" type="audio/mp3">
-        Your browser does not support the audio tag.
     </audio>
     <div class="toggle-audio">
         <input type="checkbox" id="audio-toggle">
         <label for="audio-toggle" class="slider"></label>
-        <span class="label" id="audio-label">Audio Off</span>
+        <span class="label" id="audio-label" style="user-select: none;">Audio Off</span>
     </div>
     <script>
-        const question = document.querySelector(".question");
-        const gif = document.querySelector(".gif");
-        const yesBtn = document.querySelector(".yes-btn");
-        const noBtn = document.querySelector(".no-btn");
-        const audio = document.getElementById('background-audio');
-        const audioToggle = document.getElementById('audio-toggle');
-        const audioLabel = document.getElementById('audio-label');
+        (function() {
+            const question = document.querySelector(".question");
+            const gif = document.querySelector(".gif");
+            const yesBtn = document.querySelector(".yes-btn");
+            const noBtn = document.querySelector(".no-btn");
+            const audio = document.getElementById('background-audio');
+            const audioToggle = document.getElementById('audio-toggle');
+            const audioLabel = document.getElementById('audio-label');
 
-        yesBtn.addEventListener("click", () => {
-            question.innerHTML = "I love you too! 😘";
-            gif.src = "https://i.pinimg.com/originals/55/3d/42/553d42bea9b10e0662a05aa8726fc7f4.gif";
-        });
+            // Success GIF preloaded via link tag
+            const successGifUrl = "https://i.pinimg.com/originals/55/3d/42/553d42bea9b10e0662a05aa8726fc7f4.gif";
 
-        function moveButton() {
-            const noBtnRect = noBtn.getBoundingClientRect();
-            const maxX = window.innerWidth - noBtnRect.width;
-            const maxY = window.innerHeight - noBtnRect.height;
+            yesBtn.addEventListener("click", () => {
+                question.textContent = "I love you too! 😘";
+                gif.src = successGifUrl;
+            });
 
-            let randomX = Math.floor(Math.random() * maxX);
-            let randomY = Math.floor(Math.random() * maxY);
+            function moveButton(e) {
+                // Optimization: get dimensions only once if possible, or use clientWidth
+                const width = noBtn.offsetWidth;
+                const height = noBtn.offsetHeight;
+                
+                const maxX = window.innerWidth - width;
+                const maxY = window.innerHeight - height;
 
-            randomX = Math.max(0, Math.min(randomX, maxX));
-            randomY = Math.max(0, Math.min(randomY, maxY));
+                const randomX = Math.max(0, Math.floor(Math.random() * maxX));
+                const randomY = Math.max(0, Math.floor(Math.random() * maxY));
 
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = randomX + "px";
-            noBtn.style.top = randomY + "px";
-        }
-
-        noBtn.addEventListener("mouseover", moveButton);
-        noBtn.addEventListener("touchstart", moveButton);
-
-        audio.volume = 0.1;
-
-        audioToggle.addEventListener('change', function() {
-            if (this.checked) {
-                audio.play();
-                audioLabel.textContent = "Audio On";
-            } else {
-                audio.pause();
-                audioLabel.textContent = "Audio Off";
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = randomX + "px";
+                noBtn.style.top = randomY + "px";
+                noBtn.style.zIndex = "1000";
             }
-        });
+
+            // Passive listeners for better scroll/touch performance
+            noBtn.addEventListener("mouseover", moveButton);
+            noBtn.addEventListener("touchstart", moveButton, {passive: true});
+
+            audio.volume = 0.1;
+
+            audioToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    audio.play().catch(e => console.log("Audio play blocked until interaction"));
+                    audioLabel.textContent = "Audio On";
+                } else {
+                    audio.pause();
+                    audioLabel.textContent = "Audio Off";
+                }
+            });
+        })();
     </script>
 </body>
 </html>
